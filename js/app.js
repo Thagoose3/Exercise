@@ -159,6 +159,8 @@ class ExerciseApp {
   // =========================================================================
   renderTodayView(routine = null) {
     const r = routine || this.currentDayRoutine;
+    this.currentlyDisplayedRoutine = r;
+    this.selectedDayId = r.id;
     const container = document.getElementById('todayRoutineContainer');
     if (!container) return;
 
@@ -404,7 +406,7 @@ class ExerciseApp {
 
           <!-- Big Start HIIT Button -->
           <div class="pt-2">
-            <button onclick="window.app.launchHIITRoutine()" class="w-full py-4 rounded-2xl bg-gradient-to-r from-emerald-500 via-teal-400 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-slate-950 font-black text-base shadow-xl shadow-emerald-500/20 active:scale-98 transition-all flex items-center justify-center gap-2">
+            <button onclick="window.app.launchHIITRoutine('${r.id}')" class="w-full py-4 rounded-2xl bg-gradient-to-r from-emerald-500 via-teal-400 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-slate-950 font-black text-base shadow-xl shadow-emerald-500/20 active:scale-98 transition-all flex items-center justify-center gap-2">
               <i data-lucide="play" class="w-5 h-5 fill-current"></i>
               <span>🚀 เริ่มจับเวลา HIIT สับไขมันอัตโนมัติ</span>
             </button>
@@ -512,18 +514,33 @@ class ExerciseApp {
   // =========================================================================
   // HIIT ENGINE FULLSCREEN RUNNER
   // =========================================================================
-  launchHIITRoutine(customConfig = null) {
-    const routine = this.currentDayRoutine;
-    let config = customConfig;
+  launchHIITRoutine(dayIdOrConfig = null) {
+    let config = null;
 
-    if (!config && routine.part2) {
-      config = {
-        workSec: routine.part2.workSec || 40,
-        restSec: routine.part2.restSec || 20,
-        rounds: routine.part2.rounds || 3,
-        prepareSec: routine.part2.prepareSec || 10,
-        exercises: routine.part2.exercises
-      };
+    if (typeof dayIdOrConfig === 'string') {
+      const routine = WORKOUT_ROUTINES[dayIdOrConfig] || this.currentlyDisplayedRoutine || this.currentDayRoutine;
+      if (routine && routine.part2) {
+        config = {
+          workSec: routine.part2.workSec || 40,
+          restSec: routine.part2.restSec || 20,
+          rounds: routine.part2.rounds || 3,
+          prepareSec: routine.part2.prepareSec || 10,
+          exercises: routine.part2.exercises
+        };
+      }
+    } else if (dayIdOrConfig && typeof dayIdOrConfig === 'object') {
+      config = dayIdOrConfig;
+    } else {
+      const routine = this.currentlyDisplayedRoutine || this.currentDayRoutine;
+      if (routine && routine.part2) {
+        config = {
+          workSec: routine.part2.workSec || 40,
+          restSec: routine.part2.restSec || 20,
+          rounds: routine.part2.rounds || 3,
+          prepareSec: routine.part2.prepareSec || 10,
+          exercises: routine.part2.exercises
+        };
+      }
     }
 
     if (!config || !config.exercises || config.exercises.length === 0) {
