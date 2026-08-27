@@ -5,7 +5,8 @@
 **สูตรลดไขมันติดสปีด (Fat Loss Acceleration) • ดัมเบล + HIIT 25–30 นาที • เดินรับลม สวนเกษตร มข.**
 
 [![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Live%20Demo-emerald?style=for-the-badge&logo=github)](https://Thagoose3.github.io/Exercise/)
-[![Version](https://img.shields.io/badge/Version-1.0.1-blue?style=for-the-badge)](PATCHNOTE.md)
+[![Version](https://img.shields.io/badge/Version-1.1.0-blue?style=for-the-badge)](PATCHNOTE.md)
+[![Firebase](https://img.shields.io/badge/Firebase-Auth%20%7C%20Firestore-orange?style=for-the-badge&logo=firebase)](https://firebase.google.com/)
 [![License](https://img.shields.io/badge/License-MIT-purple?style=for-the-badge)](LICENSE)
 [![Platform](https://img.shields.io/badge/Platform-Mobile%20%7C%20Desktop%20%7C%20Tablet-cyan?style=for-the-badge)](https://Thagoose3.github.io/Exercise/)
 
@@ -142,6 +143,26 @@ gantt
 3. **Standing Mountain Climbers:** ยืนยกเข่าแตะฝ่ามือสลับสปีดเร็ว
 
 </details>
+
+---
+
+## ☁️ วิธีเชื่อมต่อ Google Login & Firebase Cloud Database (3 นาที)
+
+หากคุณต้องการซิงค์ประวัติและสถิติข้ามอุปกรณ์ (มือถือ ↔ คอมพิวเตอร์):
+
+1. **สร้าง Firebase Project:**
+   - เข้าไปที่ [Firebase Console](https://console.firebase.google.com/) แล้วกด **"Add project"** (ตั้งชื่อโปรเจกต์ เช่น `my-exercise-app`)
+2. **เปิดระบบ Google Sign-In:**
+   - ไปที่เมนู **Build** ➡️ **Authentication** ➡️ กด **Get Started**
+   - ในแท็บ **Sign-in method** เลือก **Google** แล้วกดเปิด **Enable** (เลือกอีเมล Support แล้วกด Save)
+   - ในแท็บ **Settings** ของ Authentication ➡️ เลื่อนลงมาที่ **Authorized domains** ➡️ กด **Add domain** แล้วใส่ `thagoose3.github.io` และ `localhost`
+3. **เปิดฐานข้อมูล Cloud Firestore:**
+   - ไปที่เมนู **Build** ➡️ **Firestore Database** ➡️ กด **Create database**
+   - เลือก **Start in test mode** (หรือ Production) แล้วกด **Next** ➡️ **Enable**
+4. **นำคีย์มาใส่ในเว็บแอป:**
+   - ไปที่ **Project Settings (รูปเฟืองมุมบนซ้าย)** ➡️ เลื่อนลงมาที่หัวข้อ **Your apps** ➡️ กดไอคอน **Web (</>)**
+   - คัดลอกค่า `apiKey`, `projectId`, `appId` มาใส่ในเมนู **"ตั้งค่า Firebase Keys"** บนหน้าเว็บแอป (หรือแก้ไขในไฟล์ `js/firebaseConfig.js`)
+   - กดปุ่ม **"เข้าสู่ระบบด้วย Google"** เพื่อเริ่มซิงค์ข้อมูลได้ทันที!
 
 ---
 

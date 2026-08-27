@@ -1,16 +1,21 @@
 /**
  * Main Application Orchestrator for Exercise Web App
+ * Supports Google Authentication & Cloud Firestore Real-time Sync
  */
 
 import { WORKOUT_ROUTINES, getRoutineForDay, getTodayRoutine } from './workoutData.js';
 import { soundEngine, wakeLockManager, RestTimer, HIITEngine, OutdoorWalkTracker } from './timer.js';
 import { StorageManager } from './storage.js';
+import { authManager } from './authManager.js';
+import { getFirebaseConfig, saveFirebaseConfig, isFirebaseConfigured } from './firebaseConfig.js';
 
 class ExerciseApp {
   constructor() {
     this.currentDayRoutine = getTodayRoutine();
+    this.currentlyDisplayedRoutine = this.currentDayRoutine;
     this.selectedDayId = this.currentDayRoutine.id;
     this.activeTab = 'today';
+    this.unsubscribeCloud = null;
 
     // Engines
     this.restTimer = new RestTimer({
@@ -38,6 +43,7 @@ class ExerciseApp {
     this.initLucide();
     this.setupDateHeader();
     this.setupSettings();
+    this.setupAuthUI();
     this.setupTabNavigation();
     this.setupModals();
     this.setupTimersTab();
@@ -109,6 +115,139 @@ class ExerciseApp {
         soundEngine.playWorkStartTone();
       }
     });
+  }
+
+  // =========================================================================
+  // AUTHENTICATION & CLOUD SYNC UI
+  // =========================================================================
+  setupAuthUI() {
+    const btnLoginGoogle = document.getElementById('btnLoginGoogle');
+    const userProfileBadge = document.getElementById('userProfileBadge');
+    const userAvatarImg = document.getElementById('userAvatarImg');
+    const userNameText = document.getElementById('userNameText');
+    const userDropdownMenu = document.getElementById('userDropdownMenu');
+    const dropdownUserEmail = document.getElementById('dropdownUserEmail');
+    const btnSignOut = document.getElementById('btnSignOut');
+    const btnManualSyncCloud = document.getElementById('btnManualSyncCloud');
+    const btnOpenFirebaseSettings = document.getElementById('btnOpenFirebaseSettings');
+    const syncStatusIndicator = document.getElementById('syncStatusIndicator');
+
+    // Subscribe to Auth state changes
+    authManager.onAuthChange(async (user) => {
+      if (user) {
+        // User logged in
+        if (btnLoginGoogle) btnLoginGoogle.classList.add('hidden');
+        if (userProfileBadge) {
+          userProfileBadge.classList.remove('hidden');
+          userProfileBadge.classList.add('flex');
+        }
+
+        if (userAvatarImg) userAvatarImg.src = user.photoURL || 'https://www.gravatar.com/avatar/?d=mp';
+        if (userNameText) userNameText.textContent = user.displayName?.split(' ')[0] || 'User';
+        if (dropdownUserEmail) dropdownUserEmail.textContent = user.email || '';
+
+        if (syncStatusIndicator) {
+          syncStatusIndicator.innerHTML = `<i data-lucide="cloud" class="w-3 h-3 text-emerald-400"></i> ซิงค์กับ Cloud Firestore (Real-Time)`;
+        }
+
+        // Fetch cloud data and sync
+        await StorageManager.fetchCloudHistory(user.uid);
+        await StorageManager.syncLocalToCloud();
+        this.renderStatsAndHistory();
+
+        // Realtime listener
+        if (this.unsubscribeCloud) this.unsubscribeCloud();
+        this.unsubscribeCloud = StorageManager.subscribeToCloudUpdates((logs) => {
+          this.renderStatsAndHistory();
+        });
+      } else {
+        // User logged out
+        if (btnLoginGoogle) btnLoginGoogle.classList.remove('hidden');
+        if (userProfileBadge) {
+          userProfileBadge.classList.add('hidden');
+          userProfileBadge.classList.remove('flex');
+        }
+        if (userDropdownMenu) userDropdownMenu.classList.add('hidden');
+
+        if (syncStatusIndicator) {
+          syncStatusIndicator.innerHTML = `<i data-lucide="database" class="w-3 h-3 text-cyan-400"></i> บันทึกในเครื่อง (LocalStorage)`;
+        }
+
+        if (this.unsubscribeCloud) {
+          this.unsubscribeCloud();
+          this.unsubscribeCloud = null;
+        }
+
+        this.renderStatsAndHistory();
+      }
+
+      this.initLucide();
+    });
+
+    // Login button click
+    btnLoginGoogle?.addEventListener('click', async () => {
+      try {
+        await authManager.signInWithGoogle();
+        this.fireConfetti();
+      } catch (err) {
+        if (err.message === 'NOT_CONFIGURED') {
+          // Open Firebase configuration modal if keys not entered yet
+          this.openFirebaseConfigModal();
+        } else {
+          console.warn("Google sign-in error:", err);
+          alert("ไม่สามารถเข้าสู่ระบบ Google ได้: " + (err.message || "โปรดตรวจสอบการตั้งค่า Firebase"));
+        }
+      }
+    });
+
+    // Toggle Dropdown
+    userProfileBadge?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      userDropdownMenu?.classList.toggle('hidden');
+    });
+
+    // Close Dropdown on outside click
+    document.addEventListener('click', () => {
+      userDropdownMenu?.classList.add('hidden');
+    });
+
+    // Sign Out
+    btnSignOut?.addEventListener('click', async () => {
+      if (confirm("ต้องการออกจากระบบใช่หรือไม่?")) {
+        await authManager.signOutUser();
+        alert("ออกจากระบบเรียบร้อยแล้ว (แอปจะสลับไปใช้โหมดบันทึกลงในเครื่องตามปกติ)");
+      }
+    });
+
+    // Manual Cloud Sync Button
+    btnManualSyncCloud?.addEventListener('click', async () => {
+      const count = await StorageManager.syncLocalToCloud();
+      this.fireConfetti();
+      alert(`☁️ ซิงค์ข้อมูลกับ Firebase สำเร็จเรียบร้อย! (อัปโหลดประวัติใหม่ ${count} รายการ)`);
+      this.renderStatsAndHistory();
+    });
+
+    // Open Firebase Settings
+    btnOpenFirebaseSettings?.addEventListener('click', () => {
+      this.openFirebaseConfigModal();
+    });
+  }
+
+  openFirebaseConfigModal() {
+    const modal = document.getElementById('firebaseConfigModal');
+    const cfg = getFirebaseConfig();
+
+    const apiKeyInput = document.getElementById('fbInputApiKey');
+    const authDomainInput = document.getElementById('fbInputAuthDomain');
+    const projectIdInput = document.getElementById('fbInputProjectId');
+    const appIdInput = document.getElementById('fbInputAppId');
+
+    if (apiKeyInput && cfg.apiKey && !cfg.apiKey.includes('YOUR_API_KEY')) apiKeyInput.value = cfg.apiKey;
+    if (authDomainInput && cfg.authDomain) authDomainInput.value = cfg.authDomain;
+    if (projectIdInput && cfg.projectId && cfg.projectId !== 'exercise-app') projectIdInput.value = cfg.projectId;
+    if (appIdInput && cfg.appId) appIdInput.value = cfg.appId;
+
+    if (modal) modal.classList.remove('hidden');
   }
 
   setupTabNavigation() {
@@ -641,7 +780,6 @@ class ExerciseApp {
   // OUTDOOR WALK TICK HANDLERS
   // =========================================================================
   handleOutdoorTick(summary) {
-    // Update Widget display
     const outDisplay = document.getElementById('outdoorTimerDisplay');
     const outBar = document.getElementById('outdoorProgressBar');
     const outProgressText = document.getElementById('outdoorProgressText');
@@ -652,7 +790,6 @@ class ExerciseApp {
     if (outProgressText) outProgressText.textContent = `${summary.progressPercentage}% (${Math.floor(summary.elapsedSeconds / 60)}/45 นาที)`;
     if (outCalories) outCalories.textContent = summary.estimatedCalories;
 
-    // Update Today's card if active
     const todayDisplay = document.getElementById('todayOutdoorDisplay');
     const todayBar = document.getElementById('todayOutdoorBar');
     if (todayDisplay) todayDisplay.textContent = summary.formattedTime;
@@ -724,7 +861,6 @@ class ExerciseApp {
     const grid = document.getElementById('guideCardsGrid');
     if (!grid) return;
 
-    // Collect all unique exercises from routines
     const allExercises = [];
     const seen = new Set();
 
@@ -781,7 +917,6 @@ class ExerciseApp {
     grid.innerHTML = html;
     this.initLucide();
 
-    // Filter Buttons
     document.querySelectorAll('.guide-filter-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         const f = btn.getAttribute('data-filter');
@@ -800,7 +935,6 @@ class ExerciseApp {
     let targetEx = null;
     let category = 'DUMBBELL';
 
-    // Search across all routines
     ['monday', 'wednesday', 'friday'].forEach(dayKey => {
       const r = WORKOUT_ROUTINES[dayKey];
       const foundDb = r.part1?.exercises?.find(e => e.id === exerciseId);
@@ -915,15 +1049,15 @@ class ExerciseApp {
     this.initLucide();
   }
 
-  deleteHistoryItem(id) {
+  async deleteHistoryItem(id) {
     if (confirm("คุณต้องการลบประวัติรายการนี้ใช่หรือไม่?")) {
-      StorageManager.deleteLog(id);
+      await StorageManager.deleteLog(id);
       this.renderStatsAndHistory();
     }
   }
 
-  completeWorkoutSession(dayId, title, durationMinutes = 30, caloriesBurned = 260, type = 'combined') {
-    StorageManager.saveWorkoutLog({
+  async completeWorkoutSession(dayId, title, durationMinutes = 30, caloriesBurned = 260, type = 'combined') {
+    await StorageManager.saveWorkoutLog({
       dayId,
       title,
       durationMinutes,
@@ -995,10 +1129,39 @@ class ExerciseApp {
       document.getElementById('exerciseDetailModal')?.classList.add('hidden');
     });
 
+    // Firebase Config Modal Close & Save
+    document.getElementById('btnCloseFirebaseModal')?.addEventListener('click', () => {
+      document.getElementById('firebaseConfigModal')?.classList.add('hidden');
+    });
+
+    document.getElementById('btnSaveFirebaseConfig')?.addEventListener('click', () => {
+      const apiKey = document.getElementById('fbInputApiKey')?.value.trim();
+      const authDomain = document.getElementById('fbInputAuthDomain')?.value.trim();
+      const projectId = document.getElementById('fbInputProjectId')?.value.trim();
+      const appId = document.getElementById('fbInputAppId')?.value.trim();
+
+      if (!apiKey || !projectId) {
+        alert("กรุณากรอก apiKey และ projectId ให้ครบถ้วน");
+        return;
+      }
+
+      saveFirebaseConfig({
+        apiKey,
+        authDomain: authDomain || `${projectId}.firebaseapp.com`,
+        projectId,
+        storageBucket: `${projectId}.appspot.com`,
+        messagingSenderId: "1234567890",
+        appId: appId || "1:1234567890:web:abcdef"
+      });
+
+      alert("บันทึกการตั้งค่า Firebase สำเร็จ! ระบบจะทำการรีเฟรชหน้าจอเพื่อเริ่มต้นใช้งาน");
+      window.location.reload();
+    });
+
     // Clear History Button
-    document.getElementById('btnClearHistory')?.addEventListener('click', () => {
+    document.getElementById('btnClearHistory')?.addEventListener('click', async () => {
       if (confirm("คุณแน่ใจหรือไม่ว่าต้องการล้างประวัติการออกกำลังกายทั้งหมด?")) {
-        StorageManager.clearAllHistory();
+        await StorageManager.clearAllHistory();
         this.renderStatsAndHistory();
       }
     });
@@ -1066,7 +1229,7 @@ class ExerciseApp {
   }
 }
 
-// Instantiate and attach to window for inline onclick handlers
+// Instantiate and attach to window
 window.addEventListener('DOMContentLoaded', () => {
   window.app = new ExerciseApp();
 });
