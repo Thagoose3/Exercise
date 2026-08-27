@@ -1,129 +1,157 @@
-@import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800&family=Prompt:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Prompt:wght@300;400;500;600&family=Space+Grotesk:wght@500;700&display=swap');
 
 :root {
   --font-heading: 'Kanit', sans-serif;
   --font-body: 'Prompt', sans-serif;
+  --font-mono: 'Space Grotesk', monospace;
+  --bg-main: #090d16;
+  --bg-card: #101726;
+  --color-emerald: #10b981;
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
 }
 
 body {
   font-family: var(--font-body);
-  background-color: #0b0f19;
-  color: #f1f5f9;
-  -webkit-tap-highlight-color: transparent;
+  background-color: var(--bg-main);
+  color: #e2e8f0;
+  overflow-x: hidden;
+  padding-bottom: calc(75px + env(safe-area-inset-bottom));
+}
+
+@media (min-width: 768px) {
+  body {
+    padding-bottom: 2.5rem;
+  }
 }
 
 h1, h2, h3, h4, h5, h6, .font-heading {
   font-family: var(--font-heading);
+  letter-spacing: -0.01em;
 }
 
-/* Glassmorphism effects */
+.font-timer {
+  font-family: var(--font-mono);
+}
+
+/* Minimalist Glass Surfaces */
 .glass-panel {
-  background: rgba(17, 24, 39, 0.75);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(16, 23, 38, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .glass-card {
-  background: rgba(30, 41, 59, 0.6);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(18, 26, 43, 0.5);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.glass-card-active {
-  background: rgba(30, 41, 59, 0.85);
-  border: 1px solid rgba(16, 185, 129, 0.4);
+.glass-card:hover {
+  border-color: rgba(255, 255, 255, 0.08);
+  background: rgba(18, 26, 43, 0.7);
+}
+
+/* Smooth Touch Feedback on Mobile */
+.tap-active {
+  transition: transform 0.15s cubic-bezier(0.2, 0, 0, 1), opacity 0.15s ease;
+}
+.tap-active:active {
+  transform: scale(0.97);
+  opacity: 0.9;
+}
+
+/* Minimalist Glow Accents */
+.glow-emerald-subtle {
   box-shadow: 0 0 20px rgba(16, 185, 129, 0.15);
 }
 
-/* Neon Glows */
-.glow-emerald {
-  box-shadow: 0 0 25px rgba(16, 185, 129, 0.35);
+.glow-blue-subtle {
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.15);
 }
 
-.glow-blue {
-  box-shadow: 0 0 25px rgba(59, 130, 246, 0.35);
+.glow-amber-subtle {
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.15);
 }
 
-.glow-amber {
-  box-shadow: 0 0 25px rgba(245, 158, 11, 0.35);
+/* Tab Switch Fade Transition */
+.tab-content {
+  animation: fadeIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-.glow-purple {
-  box-shadow: 0 0 25px rgba(168, 85, 247, 0.35);
-}
-
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-::-webkit-scrollbar-track {
-  background: #0f172a;
-}
-::-webkit-scrollbar-thumb {
-  background: #334155;
-  border-radius: 4px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #475569;
-}
-
-/* Pulse animation for active timers */
-@keyframes pulse-ring {
-  0% {
-    transform: scale(0.95);
-    opacity: 0.8;
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
   }
-  50% {
-    transform: scale(1.05);
-    opacity: 0.4;
-  }
-  100% {
-    transform: scale(0.95);
-    opacity: 0.8;
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-.animate-pulse-ring {
-  animation: pulse-ring 2s infinite ease-in-out;
+/* Minimalist Loader / Skeleton Shimmer */
+.skeleton-shimmer {
+  background: linear-gradient(90deg, rgba(255,255,255,0.02) 25%, rgba(255,255,255,0.06) 50%, rgba(255,255,255,0.02) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
 }
 
-/* Circular Progress Stroke */
-.circle-progress {
-  transition: stroke-dashoffset 0.3s ease-in-out;
-  transform: rotate(-90deg);
-  transform-origin: 50% 50%;
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
 
-/* Set Checkbox Button Custom Style */
+/* Minimal Spinner */
+.minimal-spinner {
+  width: 24px;
+  height: 24px;
+  border: 2px solid rgba(16, 185, 129, 0.2);
+  border-top-color: #10b981;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Set Checkbox Button */
 .set-checkbox {
-  transition: all 0.2s ease;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .set-checkbox.checked {
   background-color: #10b981;
   border-color: #10b981;
-  color: #0f172a;
-  transform: scale(1.05);
+  color: #090d16;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
 }
 
-/* Modal Transition */
-.modal-enter {
-  opacity: 0;
-  transform: scale(0.95);
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
 }
-.modal-enter-active {
-  opacity: 1;
-  transform: scale(1);
-  transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
 }
 
-/* Bottom Nav Active State */
-.nav-item.active {
-  color: #34d399;
-}
-.nav-item.active svg {
-  stroke: #34d399;
+/* Bottom Nav Safe Padding */
+.bottom-nav-safe {
+  padding-bottom: calc(8px + env(safe-area-inset-bottom));
 }

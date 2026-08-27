@@ -250,6 +250,24 @@ class ExerciseApp {
     if (modal) modal.classList.remove('hidden');
   }
 
+  showLoader(text = "กำลังซิงค์ข้อมูล...") {
+    const loader = document.getElementById('appPageLoader');
+    if (loader) {
+      const textEl = loader.querySelector('span');
+      if (textEl) textEl.textContent = text;
+      loader.classList.remove('hidden');
+      loader.classList.add('flex');
+    }
+  }
+
+  hideLoader() {
+    const loader = document.getElementById('appPageLoader');
+    if (loader) {
+      loader.classList.add('hidden');
+      loader.classList.remove('flex');
+    }
+  }
+
   setupTabNavigation() {
     const navButtons = document.querySelectorAll('[data-tab]');
     navButtons.forEach(btn => {
@@ -261,20 +279,24 @@ class ExerciseApp {
   }
 
   switchTab(tabId) {
+    if (this.activeTab === tabId) return;
     this.activeTab = tabId;
 
     // Hide all tab contents
     document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
 
-    // Show active tab
+    // Show active tab with fadeIn
     const activeEl = document.getElementById(`tab-${tabId}`);
-    if (activeEl) activeEl.classList.remove('hidden');
+    if (activeEl) {
+      activeEl.classList.remove('hidden');
+    }
 
     // Update active nav styles
     document.querySelectorAll('.nav-btn').forEach(btn => {
       const isTarget = btn.getAttribute('data-tab') === tabId;
       btn.classList.toggle('bg-emerald-500', isTarget);
       btn.classList.toggle('text-slate-950', isTarget);
+      btn.classList.toggle('shadow-sm', isTarget);
       btn.classList.toggle('text-slate-400', !isTarget);
     });
 

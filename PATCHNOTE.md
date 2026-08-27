@@ -4,6 +4,21 @@
 
 ---
 
+## ✨ [v1.2.0] - 2026-08-27 (Minimalist UI & Mobile PWA Edition)
+
+### 📱 Mobile PWA & App Icons (ไอคอนแอปและติดตั้งบนมือถือ)
+- **App Icons:** สร้างชุดไอคอนแอปพลิเคชันความคมชัดสูง (`favicon.svg`, `icon-192.png`, `icon-512.png`, `apple-touch-icon.png`) ในธีม Dark Minimalist Flame & Lightning ⚡
+- **PWA Web Manifest:** เพิ่มไฟล์ `manifest.json` รองรับการติดตั้งแบบ Standalone App บน iOS และ Android เต็มรูปแบบ ไม่มีแถบเบราว์เซอร์กวนใจ
+- **Safe Area Insets:** รองรับขอบจอมือถือไร้ขอบ (iPhone Dynamic Island / Notch / Home Indicator) สบายตา
+
+### 🎨 Minimalist UI/UX Redesign (ดีไซน์มินิมอล สะอาดตา ใช้งานง่าย)
+- **Ultra-Clean Dark Palette:** ปรับโทนสีเป็น Deep Obsidian (`#090d16`) เสริมด้วยเส้นขอบบางเบา (`border-white/[0.05]`) และการจัดระยะที่โปร่งตา
+- **Smooth Page Transitions:** เพิ่มระบบแอนิเมชันสลับหน้าแบบ Fade-in นุ่มนวล
+- **Minimalist Loading State:** เพิ่มหน้าแสดงการโหลดสไตล์มินิมอล (`#appPageLoader` & `minimal-spinner`) เมื่อต้องประมวลผลหรือซิงค์ข้อมูล Cloud
+- **Thumb-Friendly Touch Target:** ปรับขนาดปุ่มและการสัมผัสบนมือถือให้กดง่าย ไม่เมื่อยนิ้ว พร้อมเอฟเฟกต์การกด (`tap-active`) ที่ตอบสนองทันใจ
+
+---
+
 ## ☁️ [v1.1.0] - 2026-08-27 (Major Cloud Release)
 
 ### 🚀 Google Authentication & Cloud Firestore (ระบบล็อกอินและฐานข้อมูล)
