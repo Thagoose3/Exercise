@@ -1108,6 +1108,31 @@ class ExerciseApp {
   // =========================================================================
   // SETUP MODAL EVENTS & TIMERS TAB
   // =========================================================================
+  openBackdateModal() {
+    const modal = document.getElementById('backdateModal');
+    const backdateDate = document.getElementById('backdateInputDate');
+    const today = new Date().toISOString().split('T')[0];
+    if (backdateDate) {
+      backdateDate.value = today;
+      backdateDate.max = today;
+    }
+    if (modal) {
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      modal.style.display = 'flex';
+    }
+    this.initLucide();
+  }
+
+  closeBackdateModal() {
+    const modal = document.getElementById('backdateModal');
+    if (modal) {
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+      modal.style.display = 'none';
+    }
+  }
+
   setupModals() {
     // HIIT Modal Controls
     document.getElementById('btnExitHIIT')?.addEventListener('click', () => {
@@ -1182,7 +1207,6 @@ class ExerciseApp {
 
     // Backdate Modal Controls (บันทึกย้อนหลัง)
     const btnOpenBackdate = document.getElementById('btnOpenBackdateModal');
-    const backdateModal = document.getElementById('backdateModal');
     const btnCloseBackdate = document.getElementById('btnCloseBackdateModal');
     const backdateDate = document.getElementById('backdateInputDate');
     const backdateSelect = document.getElementById('backdateSelectRoutine');
@@ -1191,18 +1215,8 @@ class ExerciseApp {
     const backdateNote = document.getElementById('backdateInputNote');
     const btnSubmitBackdate = document.getElementById('btnSubmitBackdate');
 
-    btnOpenBackdate?.addEventListener('click', () => {
-      const today = new Date().toISOString().split('T')[0];
-      if (backdateDate) {
-        backdateDate.value = today;
-        backdateDate.max = today;
-      }
-      if (backdateModal) backdateModal.classList.remove('hidden');
-    });
-
-    btnCloseBackdate?.addEventListener('click', () => {
-      if (backdateModal) backdateModal.classList.add('hidden');
-    });
+    btnOpenBackdate?.addEventListener('click', () => this.openBackdateModal());
+    btnCloseBackdate?.addEventListener('click', () => this.closeBackdateModal());
 
     backdateSelect?.addEventListener('change', () => {
       const opt = backdateSelect.selectedOptions[0];
@@ -1238,7 +1252,7 @@ class ExerciseApp {
         note
       });
 
-      if (backdateModal) backdateModal.classList.add('hidden');
+      this.closeBackdateModal();
       this.fireConfetti();
       soundEngine.playCompleteChime();
       alert(`🎉 บันทึกการออกกำลังกายย้อนหลังของวันที่ ${date} สำเร็จเรียบร้อย!`);
