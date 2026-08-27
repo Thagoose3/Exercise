@@ -45,10 +45,13 @@ export class StorageManager {
    * Save a workout session log (Cloud Firestore + LocalStorage)
    */
   static async saveWorkoutLog(log) {
+    const entryDate = log.date || new Date().toISOString().split('T')[0];
+    const entryTimestamp = log.timestamp || (log.date ? new Date(log.date + 'T12:00:00').getTime() : Date.now());
+
     const newEntry = {
-      id: 'log_' + Date.now(),
-      date: new Date().toISOString().split('T')[0],
-      timestamp: Date.now(),
+      id: log.id || 'log_' + entryTimestamp + '_' + Math.random().toString(36).substring(2, 6),
+      date: entryDate,
+      timestamp: entryTimestamp,
       title: log.title || 'ออกกำลังกายสำเร็จ',
       dayId: log.dayId || 'custom',
       durationMinutes: log.durationMinutes || 25,
@@ -57,9 +60,10 @@ export class StorageManager {
       note: log.note || ''
     };
 
-    // 1. Save to LocalStorage immediately (instant response)
+    // 1. Save to LocalStorage immediately and sort by timestamp descending
     const history = this.getHistory();
-    history.unshift(newEntry);
+    history.push(newEntry);
+    history.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
     this.setLocalHistory(history);
 
     // 2. If logged in with Firebase, save to Cloud Firestore

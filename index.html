@@ -386,9 +386,14 @@
               <i data-lucide="database" class="w-2.5 h-2.5 text-cyan-400"></i> บันทึกในเครื่อง
             </span>
           </div>
-          <button id="btnClearHistory" class="text-[11px] text-rose-400/80 hover:text-rose-300">
-            ล้างประวัติ
-          </button>
+          <div class="flex items-center gap-2">
+            <button id="btnOpenBackdateModal" class="tap-active px-2.5 py-1.5 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 text-emerald-400 font-semibold text-[11px] flex items-center gap-1">
+              <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i> <span>+ บันทึกย้อนหลัง</span>
+            </button>
+            <button id="btnClearHistory" class="text-[11px] text-rose-400/80 hover:text-rose-300">
+              ล้าง
+            </button>
+          </div>
         </div>
 
         <div id="workoutHistoryList" class="space-y-2"></div>
@@ -570,6 +575,68 @@
       <button id="btnSaveFirebaseConfig" class="tap-active w-full py-2.5 rounded-xl bg-emerald-500 text-slate-950 font-bold mt-2">
         บันทึกการตั้งค่า
       </button>
+    </div>
+  </div>
+  <!-- ========================================================================= -->
+  <!-- BACKDATE WORKOUT MODAL (บันทึกย้อนหลัง) -->
+  <!-- ========================================================================= -->
+  <div id="backdateModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-md w-full p-5 space-y-3.5 shadow-2xl text-xs">
+      <div class="flex items-start justify-between">
+        <div>
+          <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-400">MANUAL LOG</span>
+          <h3 class="text-base font-bold text-slate-100 mt-1">บันทึกการออกกำลังกายย้อนหลัง</h3>
+          <p class="text-[11px] text-slate-400">เลือกวันที่และโปรแกรมที่คุณออกกำลังกาย</p>
+        </div>
+        <button id="btnCloseBackdateModal" class="p-1.5 rounded-xl bg-slate-800 text-slate-400 hover:text-slate-200">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <div class="space-y-2.5">
+        <!-- Date Selection -->
+        <div>
+          <label class="block text-slate-300 font-medium mb-1">วันที่ออกกำลังกาย:</label>
+          <input type="date" id="backdateInputDate" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-200 focus:border-emerald-500 focus:outline-none text-xs">
+        </div>
+
+        <!-- Routine Selection -->
+        <div>
+          <label class="block text-slate-300 font-medium mb-1">โปรแกรมที่เล่น:</label>
+          <select id="backdateSelectRoutine" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-200 focus:border-emerald-500 focus:outline-none text-xs">
+            <option value="monday" data-time="30" data-cal="250">🟢 วันจันทร์: Upper Body & Core Strength + Core-HIIT</option>
+            <option value="wednesday" data-time="30" data-cal="280">🟢 วันพุธ: Lower Body & Glutes + Cardio-HIIT</option>
+            <option value="friday" data-time="30" data-cal="300">🟢 วันศุกร์: Full Body Complex + Tabata Finisher</option>
+            <option value="thursday" data-time="45" data-cal="220">🌳 เดินรับลม สวนเกษตร มข. (45 นาที)</option>
+            <option value="tuesday" data-time="0" data-cal="0">🛌 วันพักผ่อน (Rest Day / Recovery)</option>
+            <option value="custom" data-time="30" data-cal="200">⚡ ออกกำลังกายอื่นๆ (กำหนดเอง)</option>
+          </select>
+        </div>
+
+        <!-- Duration & Calories Inputs -->
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-slate-300 font-medium mb-1">เวลา (นาที):</label>
+            <input type="number" id="backdateInputDuration" value="30" min="0" max="300" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-200 focus:border-emerald-500 focus:outline-none text-xs">
+          </div>
+          <div>
+            <label class="block text-slate-300 font-medium mb-1">แคลอรี่ (kcal):</label>
+            <input type="number" id="backdateInputCalories" value="250" min="0" max="2000" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-200 focus:border-emerald-500 focus:outline-none text-xs">
+          </div>
+        </div>
+
+        <!-- Optional Note -->
+        <div>
+          <label class="block text-slate-300 font-medium mb-1">บันทึกเพิ่มเติม (ถ้ามี):</label>
+          <input type="text" id="backdateInputNote" placeholder="เช่น ยก 5kg รู้สึกฟิตมาก" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-200 focus:border-emerald-500 focus:outline-none text-xs">
+        </div>
+      </div>
+
+      <div class="pt-2">
+        <button id="btnSubmitBackdate" class="tap-active w-full py-3 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs shadow-lg shadow-emerald-500/20 active:scale-98 transition-all flex items-center justify-center gap-1.5">
+          <i data-lucide="check" class="w-4 h-4"></i> บันทึกข้อมูลย้อนหลัง
+        </button>
+      </div>
     </div>
   </div>
 

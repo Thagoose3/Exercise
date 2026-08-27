@@ -1180,6 +1180,71 @@ class ExerciseApp {
       window.location.reload();
     });
 
+    // Backdate Modal Controls (บันทึกย้อนหลัง)
+    const btnOpenBackdate = document.getElementById('btnOpenBackdateModal');
+    const backdateModal = document.getElementById('backdateModal');
+    const btnCloseBackdate = document.getElementById('btnCloseBackdateModal');
+    const backdateDate = document.getElementById('backdateInputDate');
+    const backdateSelect = document.getElementById('backdateSelectRoutine');
+    const backdateDuration = document.getElementById('backdateInputDuration');
+    const backdateCalories = document.getElementById('backdateInputCalories');
+    const backdateNote = document.getElementById('backdateInputNote');
+    const btnSubmitBackdate = document.getElementById('btnSubmitBackdate');
+
+    btnOpenBackdate?.addEventListener('click', () => {
+      const today = new Date().toISOString().split('T')[0];
+      if (backdateDate) {
+        backdateDate.value = today;
+        backdateDate.max = today;
+      }
+      if (backdateModal) backdateModal.classList.remove('hidden');
+    });
+
+    btnCloseBackdate?.addEventListener('click', () => {
+      if (backdateModal) backdateModal.classList.add('hidden');
+    });
+
+    backdateSelect?.addEventListener('change', () => {
+      const opt = backdateSelect.selectedOptions[0];
+      if (opt) {
+        const time = opt.getAttribute('data-time') || '30';
+        const cal = opt.getAttribute('data-cal') || '250';
+        if (backdateDuration) backdateDuration.value = time;
+        if (backdateCalories) backdateCalories.value = cal;
+      }
+    });
+
+    btnSubmitBackdate?.addEventListener('click', async () => {
+      const date = backdateDate?.value;
+      if (!date) {
+        alert("กรุณาเลือกวันที่ออกกำลังกาย");
+        return;
+      }
+
+      const opt = backdateSelect?.selectedOptions[0];
+      const routineId = backdateSelect?.value || 'custom';
+      const title = opt ? opt.textContent.trim() : 'ออกกำลังกายสำเร็จ';
+      const duration = parseInt(backdateDuration?.value || '30', 10);
+      const calories = parseInt(backdateCalories?.value || '250', 10);
+      const note = backdateNote?.value?.trim() || '';
+
+      await StorageManager.saveWorkoutLog({
+        date,
+        dayId: routineId,
+        title,
+        durationMinutes: duration,
+        caloriesBurned: calories,
+        type: routineId === 'thursday' ? 'outdoor_walk' : (routineId === 'tuesday' ? 'rest' : 'combined'),
+        note
+      });
+
+      if (backdateModal) backdateModal.classList.add('hidden');
+      this.fireConfetti();
+      soundEngine.playCompleteChime();
+      alert(`🎉 บันทึกการออกกำลังกายย้อนหลังของวันที่ ${date} สำเร็จเรียบร้อย!`);
+      this.renderStatsAndHistory();
+    });
+
     // Clear History Button
     document.getElementById('btnClearHistory')?.addEventListener('click', async () => {
       if (confirm("คุณแน่ใจหรือไม่ว่าต้องการล้างประวัติการออกกำลังกายทั้งหมด?")) {
