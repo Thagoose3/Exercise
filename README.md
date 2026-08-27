@@ -201,23 +201,44 @@ gantt
 
 ```
 Exercise/
-├── index.html          # หน้าหลัก Responsive Single-Page Application
+├── index.html          # หน้าหลัก Responsive Single-Page Application (PWA Ready)
+├── manifest.json       # PWA Web App Manifest (ติดตั้งบนหน้าจอมือถือ)
+├── assets/
+│   ├── icons/          # ไอคอนแอปพลิเคชัน (favicon, 192px, 512px, apple-touch-icon)
+│   └── promptpay-qr.png# QR Code สนับสนุนผู้พัฒนา
 ├── css/
-│   └── style.css       # สไตล์ Dark Sport Theme, Glassmorphism, Animations
+│   └── style.css       # สไตล์ Dark Minimalist, Glassmorphism, Animations
 ├── js/
 │   ├── app.js          # Main App Controller, UI Events, Tab Router
 │   ├── workoutData.js  # ข้อมูลตาราง 7 วัน รายละเอียดท่า และเทคนิคการฝึก
 │   ├── timer.js        # Web Audio Engine, Rest Timer, HIIT Engine, Walk Stopwatch
-│   └── storage.js      # LocalStorage Manager (Streak, Logs, Daily Progress)
-├── .gitignore          # Git ignore rules
+│   ├── storage.js      # Storage Manager (Cloud Firestore + LocalStorage)
+│   ├── authManager.js  # Google Authentication Manager
+│   └── firebaseConfig.js# Firebase App & Firestore Initializer
 ├── PATCHNOTE.md        # บันทึกประวัติการอัปเดตเวอร์ชัน
 └── README.md           # เอกสารคู่มือการใช้งาน
 ```
 
 ---
 
+## ☕ สนับสนุนผู้พัฒนา (Buy Me a Coffee)
+
+หากคุณชื่นชอบและเห็นว่า **Exercise Pro** มีประโยชน์ต่อการออกกำลังกาย สุขภาพ และวินัยในการดูแลตัวเองของคุณ สามารถร่วมสนับสนุนค่ากาแฟและเป็นกำลังใจในการพัฒนาฟีเจอร์ใหม่ๆ ได้ที่ QR Code ด้านล่างนี้เลยครับ 💖
+
 <div align="center">
 
-สร้างสรรค์ด้วย ❤️ เพื่อสุขภาพและรูปร่างที่ดีขึ้นในทุกๆ วัน • **Keep Burning! 🔥**
+<img src="assets/promptpay-qr.png" alt="PromptPay QR Code" width="280" style="border-radius: 20px; box-shadow: 0 8px 30px rgba(0,0,0,0.4);" />
+
+<br/>
+
+**พร้อมเพย์ (PromptPay) : นายฐากูร เอ็นสาร**
+
+</div>
+
+---
+
+<div align="center">
+
+**Exercise Pro** — Built with 💖 for your healthy lifestyle & fitness journey.
 
 </div>
