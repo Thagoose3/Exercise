@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="th" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#0b0f19">
+  <title>Exercise Pro - โปรแกรมออกกำลังกายส่วนตัว</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#ecfdf5',
+              100: '#d1fae5',
+              500: '#10b981',
+              600: '#059669',
+              700: '#047857',
+            },
+            dark: {
+              bg: '#0b0f19',
+              card: '#131c2e',
+              border: '#1f293d',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Canvas Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-[#0b0f19] text-slate-100 min-h-screen flex flex-col antialiased selection:bg-emerald-500 selection:text-black pb-24 md:pb-10">
+
+  <!-- TOP HEADER -->
+  <header class="sticky top-0 z-40 bg-[#0b0f19]/90 backdrop-blur-md border-b border-slate-800/80 px-4 py-3">
+    <div class="max-w-4xl mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center shadow-lg shadow-emerald-500/20 font-extrabold text-black text-xl tracking-wider">
+          🔥
+        </div>
+        <div>
+          <h1 class="text-lg font-bold tracking-wide flex items-center gap-2">
+            EXERCISE <span class="text-xs px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-medium border border-emerald-500/30">PRO</span>
+          </h1>
+          <p id="headerDateStr" class="text-xs text-slate-400 font-light">กำลังโหลดวันที่...</p>
+        </div>
+      </div>
+
+      <!-- Quick Audio & Voice Controls -->
+      <div class="flex items-center gap-2">
+        <button id="btnToggleVoice" title="เปิด/ปิดเสียงพูดแนะนำ" class="p-2 rounded-lg bg-slate-800/80 border border-slate-700/60 text-slate-300 hover:text-emerald-400 active:scale-95 transition-all text-xs flex items-center gap-1.5">
+          <i data-lucide="volume-2" class="w-4 h-4 text-emerald-400"></i>
+          <span class="hidden sm:inline text-xs">เสียงบรรยาย</span>
+        </button>
+        <button id="btnToggleSound" title="เปิด/ปิดเสียง Beep" class="p-2 rounded-lg bg-slate-800/80 border border-slate-700/60 text-slate-300 hover:text-emerald-400 active:scale-95 transition-all">
+          <i data-lucide="bell" class="w-4 h-4 text-emerald-400"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="flex-1 max-w-4xl w-full mx-auto p-4 sm:p-6 space-y-6">
+
+    <!-- DESKTOP TOP NAV BAR -->
+    <div class="hidden md:flex items-center justify-center p-1.5 bg-slate-900/90 border border-slate-800 rounded-2xl max-w-2xl mx-auto shadow-xl">
+      <button data-tab="today" class="nav-btn flex-1 py-2.5 px-4 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 transition-all bg-emerald-500 text-slate-950 shadow-md">
+        <i data-lucide="flame" class="w-4 h-4"></i> วันนี้ (Today)
+      </button>
+      <button data-tab="schedule" class="nav-btn flex-1 py-2.5 px-4 rounded-xl text-sm font-semibold text-slate-400 hover:text-slate-200 flex items-center justify-center gap-2 transition-all">
+        <i data-lucide="calendar" class="w-4 h-4"></i> ตารางทั้งสัปดาห์
+      </button>
+      <button data-tab="timers" class="nav-btn flex-1 py-2.5 px-4 rounded-xl text-sm font-semibold text-slate-400 hover:text-slate-200 flex items-center justify-center gap-2 transition-all">
+        <i data-lucide="timer" class="w-4 h-4"></i> ตัวจับเวลา
+      </button>
+      <button data-tab="guide" class="nav-btn flex-1 py-2.5 px-4 rounded-xl text-sm font-semibold text-slate-400 hover:text-slate-200 flex items-center justify-center gap-2 transition-all">
+        <i data-lucide="book-open" class="w-4 h-4"></i> คู่มือท่า
+      </button>
+      <button data-tab="stats" class="nav-btn flex-1 py-2.5 px-4 rounded-xl text-sm font-semibold text-slate-400 hover:text-slate-200 flex items-center justify-center gap-2 transition-all">
+        <i data-lucide="bar-chart-3" class="w-4 h-4"></i> สถิติ & ประวัติ
+      </button>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- TAB 1: TODAY'S WORKOUT -->
+    <!-- ========================================================================= -->
+    <section id="tab-today" class="tab-content space-y-6">
+      <!-- Dynamic Content Rendered by app.js -->
+      <div id="todayRoutineContainer"></div>
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- TAB 2: WEEKLY SCHEDULE -->
+    <!-- ========================================================================= -->
+    <section id="tab-schedule" class="tab-content hidden space-y-6">
+      <div class="glass-panel p-5 rounded-2xl border border-slate-800">
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <h2 class="text-xl font-bold text-slate-100 flex items-center gap-2">
+              <i data-lucide="calendar" class="w-5 h-5 text-emerald-400"></i> ภาพรวมตารางใน 1 สัปดาห์
+            </h2>
+            <p class="text-xs sm:text-sm text-slate-400">สูตรลดไขมันติดสปีด: เวทดัมเบล 15 นาที + HIIT 10 นาที (จ-พ-ศ) | เดินรับลม (พฤ/ส)</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-center mb-6">
+          <div class="p-3.5 bg-slate-800/60 rounded-xl border border-slate-700/50">
+            <span class="text-2xl font-black text-emerald-400">3 วัน</span>
+            <p class="text-xs text-slate-300 font-medium mt-1">เวทดัมเบล + HIIT ในห้อง</p>
+            <p class="text-[11px] text-slate-500">จันทร์, พุธ, ศุกร์ (25-30 นาที)</p>
+          </div>
+          <div class="p-3.5 bg-slate-800/60 rounded-xl border border-slate-700/50">
+            <span class="text-2xl font-black text-teal-400">1–2 วัน</span>
+            <p class="text-xs text-slate-300 font-medium mt-1">เดินรับลม สวนเกษตร มข.</p>
+            <p class="text-[11px] text-slate-500">พฤหัสบดี หรือ เสาร์ (40-50 นาที)</p>
+          </div>
+          <div class="p-3.5 bg-slate-800/60 rounded-xl border border-slate-700/50">
+            <span class="text-2xl font-black text-indigo-400">2–3 วัน</span>
+            <p class="text-xs text-slate-300 font-medium mt-1">พักผ่อนเต็มที่ (Rest Day)</p>
+            <p class="text-[11px] text-slate-500">อังคาร, เสาร์/อาทิตย์</p>
+          </div>
+        </div>
+
+        <!-- 7 Days Grid Cards -->
+        <div id="weeklyScheduleGrid" class="space-y-3">
+          <!-- Rendered dynamically -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- TAB 3: CUSTOM TIMERS STUDIO -->
+    <!-- ========================================================================= -->
+    <section id="tab-timers" class="tab-content hidden space-y-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        
+        <!-- Quick Rest Timer Card -->
+        <div class="glass-panel p-5 rounded-2xl border border-slate-800 space-y-4">
+          <div class="flex items-center gap-2 text-emerald-400 font-bold text-lg">
+            <i data-lucide="timer-reset" class="w-5 h-5"></i> นาฬิกาพักเซต (Rest Timer)
+          </div>
+          <p class="text-xs text-slate-400">กดเริ่มจับเวลาพักระหว่างเซต พร้อมเสียงเตือน Beep เมื่อครบเวลา</p>
+
+          <div class="flex items-center justify-center py-6">
+            <div class="relative w-44 h-44 flex items-center justify-center rounded-full bg-slate-900 border-4 border-emerald-500/30 shadow-inner">
+              <div class="text-center">
+                <span id="quickRestDisplay" class="text-4xl font-extrabold font-mono text-emerald-400">45</span>
+                <span class="block text-xs text-slate-400 uppercase tracking-widest mt-1">วินาที</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-4 gap-2">
+            <button onclick="window.app.startManualRest(30)" class="py-2 px-3 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-semibold text-slate-200 active:scale-95 transition-all">30s</button>
+            <button onclick="window.app.startManualRest(45)" class="py-2 px-3 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-xs font-semibold text-slate-950 active:scale-95 transition-all">45s</button>
+            <button onclick="window.app.startManualRest(60)" class="py-2 px-3 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-semibold text-slate-200 active:scale-95 transition-all">60s</button>
+            <button onclick="window.app.startManualRest(90)" class="py-2 px-3 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-semibold text-slate-200 active:scale-95 transition-all">90s</button>
+          </div>
+
+          <div class="flex gap-2">
+            <button id="btnStopQuickRest" class="flex-1 py-2.5 rounded-xl bg-rose-500/20 text-rose-300 border border-rose-500/30 text-xs font-semibold hover:bg-rose-500/30 transition-all">
+              หยุดเวลา
+            </button>
+            <button id="btnAdd15QuickRest" class="flex-1 py-2.5 rounded-xl bg-slate-800 text-slate-200 border border-slate-700 text-xs font-semibold hover:bg-slate-700 transition-all">
+              +15 วินาที
+            </button>
+          </div>
+        </div>
+
+        <!-- Custom Tabata / HIIT Studio -->
+        <div class="glass-panel p-5 rounded-2xl border border-slate-800 space-y-4">
+          <div class="flex items-center gap-2 text-cyan-400 font-bold text-lg">
+            <i data-lucide="sliders" class="w-5 h-5"></i> ตัวตั้งเวลา HIIT / Tabata อิสระ
+          </div>
+          <p class="text-xs text-slate-400">กำหนดเวลา Work / Rest และจำนวนรอบเพื่อเริ่มฝึกด้วยตัวเอง</p>
+
+          <div class="space-y-3 pt-2">
+            <div class="flex items-center justify-between bg-slate-800/50 p-3 rounded-xl border border-slate-700/50">
+              <span class="text-xs font-medium text-slate-300">เวลาออกกำลังกาย (Work)</span>
+              <div class="flex items-center gap-2">
+                <input type="number" id="customWorkInput" value="40" min="5" max="120" step="5" class="w-16 bg-slate-900 border border-slate-700 rounded-lg px-2 py-1 text-center text-sm font-bold text-emerald-400">
+                <span class="text-xs text-slate-400">วิ</span>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between bg-slate-800/50 p-3 rounded-xl border border-slate-700/50">
+              <span class="text-xs font-medium text-slate-300">เวลาพัก (Rest)</span>
+              <div class="flex items-center gap-2">
+                <input type="number" id="customRestInput" value="20" min="5" max="90" step="5" class="w-16 bg-slate-900 border border-slate-700 rounded-lg px-2 py-1 text-center text-sm font-bold text-amber-400">
+                <span class="text-xs text-slate-400">วิ</span>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between bg-slate-800/50 p-3 rounded-xl border border-slate-700/50">
+              <span class="text-xs font-medium text-slate-300">จำนวนรอบ (Rounds)</span>
+              <div class="flex items-center gap-2">
+                <input type="number" id="customRoundsInput" value="3" min="1" max="10" class="w-16 bg-slate-900 border border-slate-700 rounded-lg px-2 py-1 text-center text-sm font-bold text-cyan-400">
+                <span class="text-xs text-slate-400">รอบ</span>
+              </div>
+            </div>
+          </div>
+
+          <button id="btnStartCustomHIIT" class="w-full py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-bold text-sm shadow-lg shadow-cyan-500/20 active:scale-98 transition-all flex items-center justify-center gap-2">
+            <i data-lucide="play" class="w-4 h-4 fill-current"></i> เริ่มจับเวลา HIIT ที่กำหนดเอง
+          </button>
+        </div>
+
+      </div>
+
+      <!-- Outdoor Walk Dedicated Widget -->
+      <div class="glass-panel p-5 rounded-2xl border border-slate-800 space-y-4">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2 text-teal-400 font-bold text-lg">
+            <i data-lucide="footprints" class="w-5 h-5"></i> นาฬิกาจับเวลาเดินรับลม (สวนเกษตร มข.)
+          </div>
+          <span class="text-xs px-2.5 py-1 rounded-full bg-teal-500/20 text-teal-300 border border-teal-500/30">เป้าหมาย 45 นาที</span>
+        </div>
+        <p class="text-xs text-slate-400">จับเวลาเดินสบายๆ โซน 2 มีเสียงเตือนทุกๆ 10 นาทีเพื่อให้คุณรับรู้ช่วงเวลา</p>
+
+        <div class="flex flex-col sm:flex-row items-center justify-around gap-6 py-4 bg-slate-900/60 rounded-2xl p-4 border border-slate-800">
+          <div class="text-center">
+            <span id="outdoorTimerDisplay" class="text-5xl sm:text-6xl font-black font-mono tracking-tight text-teal-400">00:00</span>
+            <p class="text-xs text-slate-400 mt-1">เวลาที่เดินไปแล้ว</p>
+          </div>
+
+          <div class="w-full sm:w-1/2 space-y-2">
+            <div class="flex justify-between text-xs text-slate-400">
+              <span>ความคืบหน้า</span>
+              <span id="outdoorProgressText">0% (0/45 นาที)</span>
+            </div>
+            <div class="w-full h-3 bg-slate-800 rounded-full overflow-hidden">
+              <div id="outdoorProgressBar" class="h-full bg-gradient-to-r from-teal-500 to-emerald-400 rounded-full transition-all duration-300" style="width: 0%"></div>
+            </div>
+            <div class="flex justify-between text-[11px] text-slate-500 pt-1">
+              <span>เผาผลาญประมาณ: <b id="outdoorCaloriesText" class="text-emerald-400 font-medium">0</b> kcal</span>
+              <span>10m Milestone alerts</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex gap-3">
+          <button id="btnOutdoorStartPause" class="flex-1 py-3 rounded-xl bg-teal-500 hover:bg-teal-400 text-slate-950 font-bold text-sm active:scale-98 transition-all flex items-center justify-center gap-2">
+            <i data-lucide="play" class="w-4 h-4 fill-current"></i> เริ่มเดิน
+          </button>
+          <button id="btnOutdoorReset" class="py-3 px-5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold transition-all">
+            รีเซ็ต
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- TAB 4: EXERCISE GUIDE -->
+    <!-- ========================================================================= -->
+    <section id="tab-guide" class="tab-content hidden space-y-6">
+      <div class="glass-panel p-5 rounded-2xl border border-slate-800">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+          <div>
+            <h2 class="text-xl font-bold text-slate-100 flex items-center gap-2">
+              <i data-lucide="book-open" class="w-5 h-5 text-emerald-400"></i> คู่มือและเทคนิคการทำท่าทั้งหมด
+            </h2>
+            <p class="text-xs sm:text-sm text-slate-400">คำแนะนำท่าเวทดัมเบลและ HIIT ฟอร์มที่ถูกต้องเพื่อผลลัพธ์สูงสุดและป้องกันการบาดเจ็บ</p>
+          </div>
+          
+          <!-- Filter Tags -->
+          <div class="flex gap-1.5 overflow-x-auto pb-1">
+            <button data-filter="all" class="guide-filter-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-emerald-500 text-slate-950">ทั้งหมด</button>
+            <button data-filter="dumbbell" class="guide-filter-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-800 text-slate-300 hover:bg-slate-700">ดัมเบล</button>
+            <button data-filter="hiit" class="guide-filter-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-800 text-slate-300 hover:bg-slate-700">HIIT</button>
+          </div>
+        </div>
+
+        <!-- Exercise Cards Grid -->
+        <div id="guideCardsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Rendered dynamically -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- TAB 5: STATS & WORKOUT LOG HISTORY -->
+    <!-- ========================================================================= -->
+    <section id="tab-stats" class="tab-content hidden space-y-6">
+      
+      <!-- Stats Overview Cards -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div class="p-4 bg-slate-900/90 rounded-2xl border border-slate-800 shadow-lg">
+          <div class="flex items-center justify-between text-slate-400 text-xs mb-1">
+            <span>ความต่อเนื่อง</span>
+            <i data-lucide="flame" class="w-4 h-4 text-amber-500"></i>
+          </div>
+          <div class="flex items-baseline gap-1">
+            <span id="statStreakDays" class="text-2xl sm:text-3xl font-black text-amber-400">0</span>
+            <span class="text-xs text-slate-400">วัน 🔥</span>
+          </div>
+        </div>
+
+        <div class="p-4 bg-slate-900/90 rounded-2xl border border-slate-800 shadow-lg">
+          <div class="flex items-center justify-between text-slate-400 text-xs mb-1">
+            <span>ออกกำลังกายทั้งหมด</span>
+            <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-500"></i>
+          </div>
+          <div class="flex items-baseline gap-1">
+            <span id="statTotalWorkouts" class="text-2xl sm:text-3xl font-black text-emerald-400">0</span>
+            <span class="text-xs text-slate-400">ครั้ง</span>
+          </div>
+        </div>
+
+        <div class="p-4 bg-slate-900/90 rounded-2xl border border-slate-800 shadow-lg">
+          <div class="flex items-center justify-between text-slate-400 text-xs mb-1">
+            <span>เวลาสะสม</span>
+            <i data-lucide="clock" class="w-4 h-4 text-cyan-500"></i>
+          </div>
+          <div class="flex items-baseline gap-1">
+            <span id="statTotalMinutes" class="text-2xl sm:text-3xl font-black text-cyan-400">0</span>
+            <span class="text-xs text-slate-400">นาที</span>
+          </div>
+        </div>
+
+        <div class="p-4 bg-slate-900/90 rounded-2xl border border-slate-800 shadow-lg">
+          <div class="flex items-center justify-between text-slate-400 text-xs mb-1">
+            <span>แคลอรี่ประมาณ</span>
+            <i data-lucide="zap" class="w-4 h-4 text-rose-500"></i>
+          </div>
+          <div class="flex items-baseline gap-1">
+            <span id="statTotalCalories" class="text-2xl sm:text-3xl font-black text-rose-400">0</span>
+            <span class="text-xs text-slate-400">kcal</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Workout History List -->
+      <div class="glass-panel p-5 rounded-2xl border border-slate-800 space-y-4">
+        <div class="flex items-center justify-between">
+          <h2 class="text-lg font-bold text-slate-100 flex items-center gap-2">
+            <i data-lucide="history" class="w-5 h-5 text-emerald-400"></i> ประวัติการออกกำลังกาย
+          </h2>
+          <button id="btnClearHistory" class="text-xs text-rose-400/80 hover:text-rose-300 hover:underline">
+            ล้างประวัติ
+          </button>
+        </div>
+
+        <div id="workoutHistoryList" class="space-y-2.5">
+          <!-- Rendered dynamically -->
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ========================================================================= -->
+  <!-- FULLSCREEN HIIT OVERLAY MODAL -->
+  <!-- ========================================================================= -->
+  <div id="hiitModal" class="fixed inset-0 z-50 bg-[#0b0f19]/95 backdrop-blur-xl hidden flex flex-col justify-between p-4 sm:p-8 transition-all duration-300">
+    
+    <!-- Modal Top Bar -->
+    <div class="flex items-center justify-between max-w-2xl w-full mx-auto">
+      <div class="flex items-center gap-2">
+        <span id="hiitPhaseBadge" class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-emerald-500 text-slate-950">
+          WORK
+        </span>
+        <span id="hiitRoundBadge" class="text-xs text-slate-300 font-medium">
+          รอบที่ 1 / 3
+        </span>
+      </div>
+
+      <button id="btnExitHIIT" class="p-2 rounded-xl bg-slate-800/80 text-slate-400 hover:text-rose-400 border border-slate-700/60 active:scale-95 transition-all">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+    </div>
+
+    <!-- Center Giant Countdown & Exercise Info -->
+    <div class="flex-1 flex flex-col items-center justify-center text-center max-w-xl mx-auto my-4 space-y-6">
+      
+      <!-- Current Exercise Title -->
+      <div class="space-y-1">
+        <span id="hiitExerciseSub" class="text-xs sm:text-sm uppercase tracking-widest text-slate-400 font-medium">
+          ท่าปัจจุบัน
+        </span>
+        <h2 id="hiitExerciseName" class="text-2xl sm:text-4xl font-extrabold text-white tracking-wide">
+          Standing High Knees
+        </h2>
+        <p id="hiitExerciseDetail" class="text-xs sm:text-sm text-slate-400 max-w-md mx-auto line-clamp-2">
+          เดินย่ำยกเข่าสูงสลับซ้าย-ขวาแบบติดสปีด เกร็งหน้าท้อง
+        </p>
+      </div>
+
+      <!-- Giant Countdown Circle -->
+      <div id="hiitTimerCircle" class="relative w-56 h-56 sm:w-64 sm:h-64 rounded-full flex items-center justify-center bg-slate-900/90 border-8 border-emerald-500 shadow-2xl transition-all duration-300">
+        <div class="text-center">
+          <span id="hiitCountdownNumber" class="text-6xl sm:text-7xl font-black font-mono text-emerald-400 tracking-tighter">
+            40
+          </span>
+          <span id="hiitCountdownLabel" class="block text-xs uppercase tracking-widest text-slate-400 mt-1">
+            วินาที
+          </span>
+        </div>
+      </div>
+
+      <!-- Next Up Preview -->
+      <div id="hiitNextUpBox" class="p-3 px-5 rounded-2xl bg-slate-800/60 border border-slate-700/50 flex items-center gap-3 text-left">
+        <div class="w-8 h-8 rounded-lg bg-slate-700/60 flex items-center justify-center text-slate-300 text-xs font-bold">
+          NEXT
+        </div>
+        <div>
+          <span class="text-[11px] text-slate-400 block">ท่าถัดไป:</span>
+          <span id="hiitNextExerciseName" class="text-xs sm:text-sm font-semibold text-slate-200">Shadow Boxing</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Modal Controls Bar -->
+    <div class="max-w-md w-full mx-auto flex items-center justify-center gap-4">
+      <button id="btnHIITPrev" class="p-3.5 rounded-2xl bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 active:scale-95 transition-all" title="ย้อนกลับ">
+        <i data-lucide="skip-back" class="w-5 h-5"></i>
+      </button>
+
+      <button id="btnHIITPauseResume" class="flex-1 py-4 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-lg shadow-xl shadow-emerald-500/20 active:scale-98 transition-all flex items-center justify-center gap-2">
+        <i data-lucide="pause" class="w-6 h-6 fill-current"></i>
+        <span>พักชั่วคราว</span>
+      </button>
+
+      <button id="btnHIITSkip" class="p-3.5 rounded-2xl bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 active:scale-95 transition-all" title="ข้ามไปยังท่าถัดไป">
+        <i data-lucide="skip-forward" class="w-5 h-5"></i>
+      </button>
+    </div>
+
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- REST TIMER FLOATING POPUP (Between sets) -->
+  <!-- ========================================================================= -->
+  <div id="restTimerFloatingModal" class="fixed bottom-20 md:bottom-8 right-4 left-4 md:left-auto md:w-96 z-40 bg-slate-900/95 backdrop-blur-xl border border-emerald-500/40 rounded-3xl p-4 shadow-2xl shadow-emerald-950/50 hidden animate-bounce-short">
+    <div class="flex items-center justify-between mb-2">
+      <div class="flex items-center gap-2">
+        <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
+        <span class="text-xs font-bold uppercase tracking-wider text-emerald-400">พักระหว่างเซต (Rest Time)</span>
+      </div>
+      <button id="btnCloseRestModal" class="text-slate-400 hover:text-slate-200">
+        <i data-lucide="x" class="w-4 h-4"></i>
+      </button>
+    </div>
+
+    <div class="flex items-center gap-4 py-2">
+      <div class="w-16 h-16 rounded-2xl bg-slate-800 flex items-center justify-center border border-emerald-500/30">
+        <span id="floatingRestSecDisplay" class="text-2xl font-black font-mono text-emerald-400">45</span>
+      </div>
+      <div class="flex-1">
+        <p class="text-xs font-medium text-slate-200">สูดหายใจลึกๆ ดื่มน้ำเล็กน้อย</p>
+        <p class="text-[11px] text-slate-400 mt-0.5">ระบบจะส่งเสียงเตือนเมื่อพร้อมลุยเซตต่อไป</p>
+      </div>
+    </div>
+
+    <div class="flex gap-2 mt-2">
+      <button id="btnFloatingAdd15" class="flex-1 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition-all">
+        +15 วินาที
+      </button>
+      <button id="btnFloatingSkipRest" class="flex-1 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-bold transition-all">
+        พร้อมแล้ว ข้ามเลย ⚡
+      </button>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- EXERCISE DETAIL MODAL -->
+  <!-- ========================================================================= -->
+  <div id="exerciseDetailModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-lg w-full p-6 space-y-4 shadow-2xl max-h-[90vh] overflow-y-auto">
+      <div class="flex items-start justify-between">
+        <div>
+          <span id="modalExTypeBadge" class="text-[11px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">DUMBBELL</span>
+          <h3 id="modalExTitle" class="text-xl font-bold text-slate-100 mt-1">Dumbbell Goblet Squats</h3>
+          <p id="modalExThTitle" class="text-xs text-slate-400">ก็อบเลทสควอทแตะเก้าอี้</p>
+        </div>
+        <button id="btnCloseExDetail" class="p-2 rounded-xl bg-slate-800 text-slate-400 hover:text-slate-200">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Muscle Targets -->
+      <div>
+        <h4 class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">กล้ามเนื้อที่บริหาร</h4>
+        <div id="modalExMuscles" class="flex flex-wrap gap-1.5">
+          <!-- Badges -->
+        </div>
+      </div>
+
+      <!-- Step by Step Instructions -->
+      <div>
+        <h4 class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">ขั้นตอนและวิธีปฏิบัติ</h4>
+        <ol id="modalExSteps" class="space-y-2 text-xs sm:text-sm text-slate-300 list-decimal list-inside bg-slate-800/40 p-3.5 rounded-2xl border border-slate-800">
+          <!-- Steps -->
+        </ol>
+      </div>
+
+      <!-- Pro Tips -->
+      <div id="modalExTipsBox" class="p-3.5 rounded-2xl bg-emerald-950/30 border border-emerald-500/30 text-xs text-emerald-200 flex items-start gap-2.5">
+        <i data-lucide="lightbulb" class="w-4 h-4 text-emerald-400 shrink-0 mt-0.5"></i>
+        <div>
+          <b class="font-semibold block text-emerald-300 mb-0.5">ข้อแนะนำพิเศษ (Pro-Tip):</b>
+          <span id="modalExTipsText">เกร็งหน้าท้องตลอดเวลาและหายใจสม่ำเสมอ</span>
+        </div>
+      </div>
+
+      <button id="btnModalExCloseBottom" class="w-full py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold transition-all">
+        ปิดหน้าต่าง
+      </button>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MOBILE BOTTOM NAVIGATION -->
+  <!-- ========================================================================= -->
+  <nav class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#0b0f19]/95 backdrop-blur-lg border-t border-slate-800/80 px-2 py-2">
+    <div class="flex items-center justify-around">
+      <button data-tab="today" class="nav-item flex flex-col items-center gap-1 py-1 px-3 rounded-xl text-xs font-medium text-emerald-400 active">
+        <i data-lucide="flame" class="w-5 h-5"></i>
+        <span>วันนี้</span>
+      </button>
+      <button data-tab="schedule" class="nav-item flex flex-col items-center gap-1 py-1 px-3 rounded-xl text-xs font-medium text-slate-400">
+        <i data-lucide="calendar" class="w-5 h-5"></i>
+        <span>ตาราง</span>
+      </button>
+      <button data-tab="timers" class="nav-item flex flex-col items-center gap-1 py-1 px-3 rounded-xl text-xs font-medium text-slate-400">
+        <i data-lucide="timer" class="w-5 h-5"></i>
+        <span>จับเวลา</span>
+      </button>
+      <button data-tab="guide" class="nav-item flex flex-col items-center gap-1 py-1 px-3 rounded-xl text-xs font-medium text-slate-400">
+        <i data-lucide="book-open" class="w-5 h-5"></i>
+        <span>คู่มือ</span>
+      </button>
+      <button data-tab="stats" class="nav-item flex flex-col items-center gap-1 py-1 px-3 rounded-xl text-xs font-medium text-slate-400">
+        <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
+        <span>สถิติ</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Application Logic Scripts -->
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
