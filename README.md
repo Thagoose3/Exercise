@@ -1,54 +1,202 @@
-# 🔥 Exercise Pro - เว็บแอปพลิเคชันออกกำลังกายส่วนตัว
+<div align="center">
 
-เว็บแอปพลิเคชันจัดการและนำทางการออกกำลังกายส่วนตัว ออกแบบตามตารางลดไขมันติดสปีด (Fat Loss Acceleration Program) ใช้งานง่าย รองรับมือถือและคอมพิวเตอร์ มีระบบจับเวลาอัจฉริยะในตัว (Rest Timer & HIIT Interval Runner) พร้อมเสียงสังเคราะห์เตือนจังหวะและเก็บบันทึกสถิติลง LocalStorage
+# 🔥 EXERCISE PRO
+### เว็บแอปพลิเคชันจัดการและนำทางการออกกำลังกายส่วนตัว
+**สูตรลดไขมันติดสปีด (Fat Loss Acceleration) • ดัมเบล + HIIT 25–30 นาที • เดินรับลม สวนเกษตร มข.**
 
----
+[![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Live%20Demo-emerald?style=for-the-badge&logo=github)](https://Thagoose3.github.io/Exercise/)
+[![Version](https://img.shields.io/badge/Version-1.0.1-blue?style=for-the-badge)](PATCHNOTE.md)
+[![License](https://img.shields.io/badge/License-MIT-purple?style=for-the-badge)](LICENSE)
+[![Platform](https://img.shields.io/badge/Platform-Mobile%20%7C%20Desktop%20%7C%20Tablet-cyan?style=for-the-badge)](https://Thagoose3.github.io/Exercise/)
 
-## 🎯 สรุปภาพรวมตารางออกกำลังกายใน 1 สัปดาห์
+<br>
 
-| วัน | โปรแกรม | รูปแบบ | เวลาที่ใช้ |
-|---|---|---|---|
-| **จันทร์** | **Upper Body & Core Strength + Core-HIIT** | ดัมเบลช่วงบน 3 ท่า + HIIT หน้าท้อง 3 ท่า | 25–30 นาที |
-| **อังคาร** | **Rest Day & Recovery** | พักผ่อนเต็มที่ ซ่อมแซมเส้นใยกล้ามเนื้อ | พักผ่อน 🛌 |
-| **พุธ** | **Lower Body & Glutes + Cardio-HIIT Burnout** | ก็อบเลทสควอท, RDL, Glute Bridge + Low-Impact HIIT | 25–30 นาที |
-| **พฤหัสบดี** | **Outdoor Walk (สวนเกษตร มข.)** | เดินรับลมธรรมชาติ Zone 2 Cardio ผ่อนคลาย | 40–50 นาที |
-| **ศุกร์** | **Full Body Dumbbell Complex + Tabata Finisher** | Dumbbell Complex 3 ท่าต่อเนื่อง + Tabata Finisher | 25–30 นาที |
-| **เสาร์** | **Outdoor Walk / Weekend Recovery** | เดินชิลล์สวนเกษตร มข. หรือพักผ่อนตามสะดวก | 40–50 นาที (หรือพัก) |
-| **อาทิตย์** | **Sunday Recharge & Prep** | ชาร์จพลังเต็มร้อย พร้อมลุยสัปดาห์ใหม่ | พักผ่อน ☕ |
-
----
-
-## ⚡ ฟีเจอร์หลักในแอปพลิเคชัน
-
-1. **โหมดแนะนำประจำวันอัตโนมัติ (Smart Today's Workout)**:
-   - ตรวจจับวันในสัปดาห์อัตโนมัติ พร้อมดึงตารางของวันนั้นๆ ขึ้นมาให้พร้อมกดเริ่มได้ทันที
-   - ติ๊กถูกเช็คเซตดัมเบล (Set Tracker) พร้อมเด้งตัวจับเวลาพักเซต (Rest Timer) ให้อัตโนมัติ
-2. **ระบบจับเวลา HIIT / Tabata เต็มจอ (Automated HIIT Engine)**:
-   - สลับ Work (ออกกำลังกาย) และ Rest (พัก) อัตโนมัติ พร้อมนับรอบ (เช่น 40s ทำ / 20s พัก x 3 รอบ)
-   - หน้าจอสีเปลี่ยนตามสถานะ (เขียว = ทำ, ส้ม = พัก, น้ำเงิน = เตรียมตัว)
-   - แสดงท่าปัจจุบันและท่าถัดไปล่วงหน้า (Next Up Preview)
-3. **ระบบเสียงเตือน Web Audio API & เสียงสังเคราะห์ภาษาไทย**:
-   - เสียง Beep นับถอยหลัง 3-2-1 และเสียงเริ่มรอบ/จบรอบ คมชัด ทำงานได้โดยไม่ต้องต่อเน็ตหรือโหลดไฟล์ mp3
-   - รองรับเสียงบรรยายชื่อท่าและบอกจังหวะภาษาไทย (เปิด/ปิดได้)
-4. **โหมดเดินรับลม สวนเกษตร มข. (Outdoor Walk Tracker)**:
-   - นาฬิกาจับเวลาเดินเป้าหมาย 45 นาที พร้อมเสียงเตือนทุกๆ 10 นาที (Milestone Alert)
-5. **ระบบตัวจับเวลาอิสระ (Custom Timers Studio)**:
-   - นาฬิกาพักเซตเลือกเวลาได้ (30s, 45s, 60s, 90s, +15s)
-   - ตัวตั้งเวลา HIIT ปรับ Work/Rest/Rounds ได้อิสระ
-6. **หน้าจอสว่างตลอดเวลา (Screen Wake Lock API)**:
-   - ล็อคหน้าจอไม่ให้ดับเองขณะออกกำลังกาย
-7. **ระบบบันทึกสถิติและความต่อเนื่อง (Streak & History)**:
-   - บันทึกประวัติการออกกำลังกาย จำนวนแคลอรี่ประเมิน และเวลาสะสมลงเครื่อง (LocalStorage)
+<p align="center">
+  <a href="#-ตารางออกกำลังกายใน-1-สัปดาห์">ตารางรายสัปดาห์</a> •
+  <a href="#-ฟีเจอร์เด่น">ฟีเจอร์หลัก</a> •
+  <a href="#-ภาพรวมโปรแกรมแต่ละวัน">รายละเอียดโปรแกรม</a> •
+  <a href="#-วิธีเปิดใช้งานและติดตั้งบนมือถือ">การติดตั้งบนมือถือ</a> •
+  <a href="PATCHNOTE.md">บันทึกการอัปเดต (Patch Note)</a>
+</p>
 
 ---
 
-## 🚀 วิธีเปิดใช้งาน (How to Run)
+</div>
 
-### 1. เปิดใช้งานในเครื่องคอมพิวเตอร์ / มือถือ
-ดับเบิลคลิกไฟล์ `index.html` เพื่อเปิดใช้งานบนเว็บเบราว์เซอร์ (Chrome, Safari, Edge, Firefox) ได้ทันที
+## 📖 เกี่ยวกับโปรเจกต์ (Overview)
 
-### 2. เปิดใช้งานผ่าน GitHub Pages (ใช้งานบนมือถือได้ทุกที่)
-1. ไปที่ GitHub Repository `https://github.com/Thagoose3/Exercise`
-2. ไปที่แท็บ **Settings** -> **Pages**
-3. ที่หัวข้อ **Branch** เลือก `main` และโฟลเดอร์ `/ (root)` แล้วกด **Save**
-4. คุณจะได้ URL เช่น `https://Thagoose3.github.io/Exercise/` สามารถบันทึกลงหน้าจอโฮมของมือถือเพื่อเปิดใช้งานเหมือนแอปพลิเคชันได้ทันที!
+**Exercise Pro** คือเว็บแอปพลิเคชันออกกำลังกายส่วนตัวที่ถูกออกแบบมาเพื่อความกระชับ ตรงจุด และเห็นผลลัพธ์การลดไขมันเร็วที่สุด โดยเน้นการเวทเทรนนิ่งด้วยดัมเบล 15 นาทีเพื่อสร้างเตาเผาไขมัน (Muscle Mass) ผสานกับ Low-Impact HIIT 8–10 นาทีเพื่อกระตุ้น Afterburn Effect ตลอดวัน พร้อมโหมดเดินรับลมธรรมชาติ Zone 2 Cardio ที่ **สวนเกษตร มหาวิทยาลัยขอนแก่น (มข.)**
+
+แอปทำงานแบบ **Client-Side 100%** บันทึกข้อมูลลงเครื่องของคุณ (LocalStorage) ไม่ต้องล็อกอิน ปลอดภัย ไร้โฆษณา และรองรับการเปิดใช้งานบนมือถือทุกรุ่น
+
+---
+
+## 🎯 ตารางออกกำลังกายใน 1 สัปดาห์ (Weekly Schedule)
+
+```mermaid
+gantt
+    title ตารางออกกำลังกายประจำสัปดาห์ (Weekly Rhythm)
+    dateFormat  X
+    axisFormat %d
+    section ในห้อง (25-30m)
+    จันทร์ : Upper Body + Core HIIT      :active, 1, 2
+    พุธ   : Lower Body + Cardio HIIT     :active, 3, 4
+    ศุกร์ : DB Complex + Tabata Finisher :active, 5, 6
+    section รับลมข้างนอก
+    พฤหัสบดี : เดินสวนเกษตร มข. (45m)    :crit, 4, 5
+    เสาร์    : เดินสวนเกษตร มข. / พัก    :crit, 6, 7
+    section พักผ่อน
+    อังคาร   : Rest & Muscle Recovery    :done, 2, 3
+    อาทิตย์ : Sunday Recharge & Prep    :done, 7, 8
+```
+
+| วัน | โปรแกรมการฝึก | มัดกล้ามเนื้อเป้าหมาย | รูปแบบ & ระยะเวลา |
+| :--- | :--- | :--- | :---: |
+| **🟢 จันทร์** | **Upper Body & Core Strength + Core-HIIT** | อก, ไหล่, หลังแขน + หน้าท้อง & เอวเอส | 25–30 นาที |
+| **🛌 อังคาร** | **Rest Day & Muscle Recovery** | ซ่อมแซมเส้นใยกล้ามเนื้อ + ดื่มน้ำ 2.5L | พักผ่อนเต็มที่ |
+| **🟢 พุธ** | **Lower Body & Glutes + Cardio-HIIT Burnout** | เตาเผาต้นขา, ก้นเด้ง + สับคาร์ดิโอไร้แรงกระแทก | 25–30 นาที |
+| **🌳 พฤหัสฯ** | **Outdoor Walk & Nature Therapy** | เดินรับลมสบายๆ @ **สวนเกษตร มข.** (Zone 2) | 40–50 นาที |
+| **🟢 ศุกร์** | **Full Body Complex + Tabata Finisher** | ฟูลบอดี้ เบิร์นทั่วร่าง หัวใจสูบฉีด | 25–30 นาที |
+| **🍃 เสาร์** | **Outdoor Walk / Weekend Recovery** | เดินรับลมยามเย็น สวนเกษตร มข. หรือพักผ่อน | 40–50 นาที (หรือพัก) |
+| **☕ อาทิตย์** | **Sunday Recharge & Prep** | ชาร์จพลัง ชมนกชมไม้ เตรียมพร้อมลุยสัปดาห์ใหม่ | พักผ่อนเต็มที่ |
+
+---
+
+## ⚡ ฟีเจอร์เด่น (Key Features)
+
+### 1. 🏋️ ระบบนำทางการออกกำลังกายประจำวัน (Smart Today Dashboard)
+* **Auto-Detect Day:** ระบบตรวจจับวันในสัปดาห์อัตโนมัติ เปิดเว็บปุ๊บเจอโปรแกรมของวันนั้นทันที พร้อมปุ่มสลับเลือกดูวันอื่นๆ ได้อิสระ
+* **Interactive Set Tracker:** ติ๊กถูกเมื่อเล่นจบแต่ละเซต (เซต 1, 2, 3) 
+* **Auto Rest Timer:** เมื่อติ๊กจบเซต ตัวจับเวลาพักเซต (30s, 45s, 60s, 90s) จะเปิดขึ้นมาให้อัตโนมัติพร้อมเสียง Beep เตือนเมื่อครบเวลา
+
+### 2. ⏱️ เครื่องยนต์จับเวลา HIIT / Tabata อัตโนมัติ (Fullscreen HIIT Engine)
+* **High-Contrast Screen:** หน้าจอจับเวลาขนาดใหญ่ เปลี่ยนสีตามสถานะอย่างชัดเจน
+  * 🔵 **น้ำเงิน (Prepare):** ช่วงเตรียมตัว 10 วินาที
+  * 🟢 **เขียว (Work):** ช่วงใส่เต็มสปีด 30–40 วินาที
+  * 🟠 **ส้ม (Rest):** ช่วงพักหายใจ 15–20 วินาที
+* **Next Up Preview:** แสดงชื่อท่าถัดไปให้คุณเตรียมตัวล่วงหน้า
+* **Web Audio & Thai Speech:** เสียง Beep นับถอยหลัง 3-2-1 และเสียงพูดบรรยายชื่อท่าภาษาไทย
+* **Screen Wake Lock API:** ล็อคหน้าจอมือถือให้สว่างตลอดการออกกำลังกาย ไม่ดับเอง
+
+### 3. 🌳 โหมดเดินรับลม สวนเกษตร มข. (Outdoor Walk Tracker)
+* นาฬิกาจับเวลานับเป้าหมาย 45 นาทีสำหรับการเดิน Zone 2
+* มีระบบเสียงเตือนทุกๆ 10 นาที (Milestone Beeps & Speech) เพื่อให้คุณรู้เวลาโดยไม่ต้องหยิบมือถือขึ้นมาดูบ่อยๆ
+* ประเมินจำนวนแคลอรี่ที่เผาผลาญแบบ Real-Time
+
+### 4. 📊 ระบบบันทึกสถิติและความต่อเนื่อง (Streak & LocalStorage History)
+* บันทึกประวัติการออกกำลังกาย จำนวนครั้ง เวลาสะสม และแคลอรี่ลงในเครื่องของคุณ (LocalStorage)
+* นับสถิติความต่อเนื่อง (Streak 🔥) เพื่อสร้างวินัยและกำลังใจ
+* ข้อมูลทั้งหมดเป็นส่วนตัว 100% ไม่ส่งออกนอกเครื่อง
+
+---
+
+## 📋 รายละเอียดโปรแกรมแต่ละวัน (Workout Routines)
+
+<details>
+<summary><b>🟢 วันจันทร์: Upper Body & Core Strength + Core-HIIT (คลิกเพื่อดูท่าฝึก)</b></summary>
+
+<br>
+
+#### ช่วงที่ 1: ดัมเบลช่วงบน (15 นาที) — พัก 45 วินาทีระหว่างเซต
+1. **Floor Dumbbell Chest Press:** 3 เซต x 10–12 ครั้ง *(เน้นอกและหลังแขน นอนบนเสื่อปลอดภัยต่อไหล่)*
+2. **Dumbbell Overhead Press:** 3 เซต x 10–12 ครั้ง *(เน้นหัวไหล่กลมสวยและแขนกระชับ)*
+3. **Incline Push-ups:** 3 เซต x 8–12 ครั้ง *(วิดพื้นกับขอบโต๊ะหรือผนัง ปรับระดับความชันได้)*
+
+#### ช่วงที่ 2: Core & Metabolic HIIT (8–10 นาที) — ทำ 40 วิ / พัก 20 วิ (3 รอบ)
+1. **Standing Cross Elbow-to-Knee:** ยืนยกเข่าบิดแตะศอกตรงข้าม รีดหน้าท้องด้านข้าง
+2. **Seated / Floor Russian Twists:** นั่งบิดลำตัวซ้าย-ขวา รีดเอวเอส
+3. **Plank Hold:** แพลงก์ค้าง เกร็งหน้าท้องสร้างแกนกลางเหล็ก 40 วินาที
+
+</details>
+
+<details>
+<summary><b>🟢 วันพุธ: Lower Body & Glutes + Cardio-HIIT Burnout (คลิกเพื่อดูท่าฝึก)</b></summary>
+
+<br>
+
+#### ช่วงที่ 1: ดัมเบลสร้างเตาเผา (15 นาที) — พัก 30–45 วินาทีระหว่างเซต
+1. **Dumbbell Goblet Squats:** 3 เซต x 10–12 ครั้ง *(นั่งแตะเก้าอี้ โฟกัสต้นขาและก้น)*
+2. **Dumbbell Romanian Deadlift (RDL):** 3 เซต x 10–12 ครั้ง *(พับสะโพก เน้นหลังขาและยกก้น)*
+3. **Dumbbell Glute Bridge:** 3 เซต x 12–15 ครั้ง *(สะพานยกสะโพกวางดัมเบล ขมิบก้นแน่นๆ)*
+
+#### ช่วงที่ 2: Low-Impact HIIT สับไขมัน (8–10 นาที) — ทำ 40 วิ / พัก 20 วิ (3 รอบ)
+1. **Standing High Knees (Low-Impact):** เดินย่ำยกเข่าสูงติดสปีด ไม่กระโดด ไร้แรงกระแทก
+2. **Shadow Boxing:** ยืนทรงมวย ปล่อยหมัดชกลมรัวเร็วต่อเนื่อง
+3. **Step Jacks:** ก้าวเท้าแตะออกข้างพร้อมวาดแขนขึ้นสุด เซฟข้อเข่า
+
+</details>
+
+<details>
+<summary><b>🟢 วันศุกร์: Full Body Dumbbell Complex + Tabata Finisher (คลิกเพื่อดูท่าฝึก)</b></summary>
+
+<br>
+
+#### ช่วงที่ 1: Dumbbell Complex (15 นาที) — ทำ 3 ท่าต่อเนื่องนับเป็น 1 เซต (พัก 60–90 วิ ทำ 3–4 เซต)
+1. **Dumbbell Bent-over Row:** 10 ครั้ง *(ดึงดัมเบลพับตัว เน้นหลังหนาและกระชับสะบัก)*
+2. **Dumbbell Push Press:** 10 ครั้ง *(ย่อส่งแรงดันดัมเบลขึ้นเหนือศีรษะ)*
+3. **Dumbbell Reverse Lunges:** ข้างละ 8 ครั้ง *(ก้าวถอยหลังย่อเข่า เซฟสะบ้าหัวเข่า)*
+
+#### ช่วงที่ 2: Tabata Finisher (6–8 นาที) — ทำ 30 วิ / พัก 15 วิ (3 รอบ)
+1. **Wall Sit:** พิงกำแพงเกร็งต้นขาค้างไว้ เผาผลาญขาเหล็ก
+2. **Fast Punches with Dumbbells:** ถือดัมเบลเบาๆ ชกลมรัวสปีด
+3. **Standing Mountain Climbers:** ยืนยกเข่าแตะฝ่ามือสลับสปีดเร็ว
+
+</details>
+
+---
+
+## 📱 วิธีเปิดใช้งานและติดตั้งบนมือถือ (PWA / Add to Home Screen)
+
+คุณสามารถเปิดใช้งานเว็บแอปนี้บนมือถือ และบันทึกเป็นไอคอนแอปบนหน้าจอหลักได้เหมือนแอปทั่วไป:
+
+```
+[ เปิดเบราว์เซอร์บนมือถือ ] ➡️ [ ไปที่ลิงก์ GitHub Pages ] ➡️ [ กดแชร์ / เมนู 3 จุด ] ➡️ [ เลือก "เพิ่มไปยังหน้าจอโฮม" ]
+```
+
+* **สำหรับ iPhone (Safari):**
+  1. เปิด [https://Thagoose3.github.io/Exercise/](https://Thagoose3.github.io/Exercise/)
+  2. กดปุ่ม **Share (ไอคอนสี่เหลี่ยมลูกศรชี้ขึ้น)** ที่แถบด้านล่าง
+  3. เลือก **"Add to Home Screen (เพิ่มไปยังหน้าจอโฮม)"**
+* **สำหรับ Android (Chrome):**
+  1. เปิด [https://Thagoose3.github.io/Exercise/](https://Thagoose3.github.io/Exercise/)
+  2. กดปุ่ม **Menu (จุดสามจุดมุมบนขวา)**
+  3. เลือก **"Install app (ติดตั้งแอป)"** หรือ **"Add to Home screen (เพิ่มลงในหน้าจอหลัก)"**
+
+---
+
+## 🛠️ สถาปัตยกรรมและเทคโนโลยี (Tech Stack)
+
+* **UI Framework:** HTML5, Modern CSS3, [Tailwind CSS CDN](https://tailwindcss.com/)
+* **Typography:** Google Fonts (`Kanit` & `Prompt`)
+* **Icons:** [Lucide Icons](https://lucide.dev/)
+* **Audio Engine:** Native Web Audio API (Synthesizer Oscillators - Zero MP3 latency) & Web Speech Synthesis API (Thai TTS)
+* **Screen Management:** Screen Wake Lock API
+* **Data Storage:** LocalStorage Engine with JSON serialization
+* **Version Control & Hosting:** Git & [GitHub Pages](https://pages.github.com/)
+
+---
+
+## 📁 โครงสร้างโปรเจกต์ (Project Structure)
+
+```
+Exercise/
+├── index.html          # หน้าหลัก Responsive Single-Page Application
+├── css/
+│   └── style.css       # สไตล์ Dark Sport Theme, Glassmorphism, Animations
+├── js/
+│   ├── app.js          # Main App Controller, UI Events, Tab Router
+│   ├── workoutData.js  # ข้อมูลตาราง 7 วัน รายละเอียดท่า และเทคนิคการฝึก
+│   ├── timer.js        # Web Audio Engine, Rest Timer, HIIT Engine, Walk Stopwatch
+│   └── storage.js      # LocalStorage Manager (Streak, Logs, Daily Progress)
+├── .gitignore          # Git ignore rules
+├── PATCHNOTE.md        # บันทึกประวัติการอัปเดตเวอร์ชัน
+└── README.md           # เอกสารคู่มือการใช้งาน
+```
+
+---
+
+<div align="center">
+
+สร้างสรรค์ด้วย ❤️ เพื่อสุขภาพและรูปร่างที่ดีขึ้นในทุกๆ วัน • **Keep Burning! 🔥**
+
+</div>
